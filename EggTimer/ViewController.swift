@@ -10,47 +10,50 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var softEggTime : Int = 5
-    var mediumEggTime : Int = 7
-    var hardEggTime : Int = 10
-
+    
+    @IBOutlet weak var titleLabel: UILabel!
+    
+    let eggTimes = [
+        "Soft": 5,
+        "Medium": 7,
+        "Hard": 10
+    ]
+    
     @IBAction func onEggTap(_ sender: UIButton) {
         let eggHardness : String = sender.titleLabel!.text!
         
-        switch eggHardness {
-            case "Soft":
-                print("boiling for \(softEggTime) minutes")
-            break
-        case "Medium":
-            print("boiling for \(mediumEggTime) minutes")
-            break
-        case "Hard":
-            print("boiling for \(hardEggTime) minutes")
-            break
-        default:
-            print("Invalid egg hardness")
-            break
-        }
+        print("boiling for \(eggTimes[eggHardness]!) minutes")
         
-        let loveScore = Int.random(in: 0...100)
+        var eggBolingTimeInSeconds : Int = eggTimes[eggHardness]!;
         
-        switch loveScore {
-        case 81...100:
-            print("positive love score")
-            break
-        case 41..<80:
-            print("middle love score")
-            break
-        case ...40:
-            print("low love score")
-            break
-        default :
-            
-            print("error in the love range")
-            
-            
-            
-        }
+        /// start timer which will run for eggBoilingTimeInSeconds and print every second of its execution and stop on reaching the end
+        startTimer(seconds: eggBolingTimeInSeconds)
+    }
     
+    func startTimer(seconds: Int) {
+        titleLabel.text = "Boiling..."
+        
+        var counter : Int = seconds;
+        var timer : Timer?
+        
+        // Create a timer that fires every second
+                timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+                    guard let self = self else { return }
+                    
+                    counter -= 1
+                    print("Time left: \(counter) second(s)")
+                    
+                    titleLabel.text = "Time left: \(counter) second(s)"
+
+                    // Stop the timer when the desired time is reached
+                    if counter <= 0 {
+                        titleLabel.text = "Done!"
+                        
+                        timer.invalidate()
+                        print("Timer stopped after \(seconds) seconds")
+                    }
+                }
+        
+        RunLoop.current.add(timer!, forMode: .common)
     }
 }
