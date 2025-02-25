@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     
+    @IBOutlet weak var progressBar: UIProgressView!
+    
     let eggTimes = [
         "Soft": 5,
         "Medium": 7,
@@ -32,6 +34,7 @@ class ViewController: UIViewController {
     
     func startTimer(seconds: Int) {
         titleLabel.text = "Boiling..."
+        progressBar.progress = 0.0
         
         var counter : Int = seconds;
         var timer : Timer?
@@ -40,8 +43,12 @@ class ViewController: UIViewController {
                 timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
                     guard let self = self else { return }
                     
+                    // Calculate the increment per second based on the total time
+                            let increment = 1.0 / Float(seconds)
+                    
                     counter -= 1
                     print("Time left: \(counter) second(s)")
+                    progressBar.progress += increment
                     
                     titleLabel.text = "Time left: \(counter) second(s)"
 
